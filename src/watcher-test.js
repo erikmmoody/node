@@ -1,12 +1,14 @@
 const net = require("net"),
   server = net.createServer(connection => {
     console.log("Subscriber connected.");
-    connection.write('{"type":"changed","file":"targ');
 
-    let timer = setTimeout(() => {
-      connection.write('et.txt","timestamp":1358175758495' + "\n");
+    const firstChunk = '{"type":"changed", "timesta';
+    const secondChunk = 'mp": 1450694370074}\n';
+    connection.write(firstChunk);
+    const timer = setTimeout(() => {
+      connection.write(secondChunk);
       connection.end();
-    }, 1000);
+    }, 100);
     connection.on("end", () => {
       clearTimeout(timer);
       console.log("Subscriber disconnected");
