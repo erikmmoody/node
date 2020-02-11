@@ -1,7 +1,12 @@
 const fs = require("fs"),
   net = require("net"),
-  filename = process.argv[2],
-  server = net.createServer(connection => {
+  filename = process.argv[2];
+
+if (!filename) {
+  throw Error("Error: No filename specified.");
+}
+net
+  .createServer(connection => {
     console.log("Subscriber connected.");
     // connection.write("Now watching " + filename + " for changes...\n");
     connection.write(
@@ -24,12 +29,7 @@ const fs = require("fs"),
       console.log("Subscriber disconnected.");
       watcher.close();
     });
+  })
+  .listen(5432, () => {
+    console.log("Listening for subscribers...");
   });
-
-if (!filename) {
-  throw Error("No target filename specified.");
-}
-
-server.listen(5432, () => {
-  console.log("Listening for subscribers...");
-});
