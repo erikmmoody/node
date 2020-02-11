@@ -1,10 +1,10 @@
-'use strict'
+"use strict";
 
-const assert = require('assert');
-const EventEmitter = require('events').EventEmitter;
-const LDJClient = require('../src/ldj.js');
+const assert = require("assert");
+const EventEmitter = require("events").EventEmitter;
+const LDJClient = require("../src/ldj.js");
 
-describe('LDJClient', () => {
+describe("LDJClient", () => {
   let stream = null;
   let client = null;
 
@@ -12,11 +12,19 @@ describe('LDJClient', () => {
     stream = new EventEmitter();
     client = new LDJClient(stream);
   });
-  it('should emit a message event from a single data event', done => {
-    client.on('message', message => {
-      assert.deepEqual(message, {foo: 'bar'});
+  it("should emit a message event from a single data event", done => {
+    client.on("message", message => {
+      assert.deepEqual(message, { foo: "bar" });
       done();
     });
-    stream.emit('data', '"{"foo":"bar"\n');
+    stream.emit("data", '{"foo":"bar"}\n');
+  });
+  it("should emit a message vent from split data events", done => {
+    client.on("message", message => {
+      assert.deepEqual(message, { foo: "bar" });
+      done();
+    });
+    stream.emit("data", '{"foo":');
+    process.nextTick(() => stream.emit("data", '"bar"}\n'));
   });
 });
